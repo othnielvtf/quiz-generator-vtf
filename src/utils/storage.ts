@@ -45,7 +45,8 @@ export const storage = {
       aiSource: 'ollama',
       ollamaUrl: 'http://localhost:11434',
       openrouterApiKey: '',
-      model: 'llama3.2'
+      model: 'llama3.2',
+      difficulty: 'medium'
     };
   },
 

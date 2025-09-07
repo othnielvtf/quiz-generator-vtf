@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings as SettingsType } from '../types';
+import { Settings as SettingsType, Difficulty } from '../types';
 import { X, Settings } from 'lucide-react';
 
 interface SettingsProps {
@@ -21,6 +21,13 @@ const SettingsComponent: React.FC<SettingsProps> = ({ settings, onSettingsChange
       ...prev,
       aiSource: source,
       model: source === 'ollama' ? 'llama3.2' : 'meta-llama/llama-3.2-3b-instruct:free'
+    }));
+  };
+  
+  const handleDifficultyChange = (difficulty: Difficulty) => {
+    setLocalSettings(prev => ({
+      ...prev,
+      difficulty
     }));
   };
 
@@ -112,6 +119,27 @@ const SettingsComponent: React.FC<SettingsProps> = ({ settings, onSettingsChange
               className="w-full px-4 py-2 bg-[#1a1a1a] text-white border border-gray-600 focus:border-white focus:outline-none"
               placeholder={localSettings.aiSource === 'ollama' ? 'llama3.2' : 'meta-llama/llama-3.2-3b-instruct:free'}
             />
+          </div>
+
+          <div>
+            <label className="block text-white text-sm font-medium mb-2">
+              Default Difficulty Level
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              {['easy', 'medium', 'hard'].map((level) => (
+                <button
+                  key={level}
+                  type="button"
+                  onClick={() => handleDifficultyChange(level as Difficulty)}
+                  className={`py-2 px-4 text-center border ${localSettings.difficulty === level 
+                    ? 'bg-white text-[#1a1a1a] border-white' 
+                    : 'bg-transparent text-white border-gray-600 hover:border-white'} 
+                    transition-colors capitalize`}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="flex gap-3 pt-4">

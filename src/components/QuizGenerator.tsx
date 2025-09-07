@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, Quiz } from '../types';
+import { Settings, Quiz, Difficulty } from '../types';
 import { generateQuiz } from '../utils/api';
 import { ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
 
@@ -11,6 +11,7 @@ interface QuizGeneratorProps {
 
 const QuizGenerator: React.FC<QuizGeneratorProps> = ({ settings, onQuizGenerated, onBack }) => {
   const [subject, setSubject] = useState('');
+  const [difficulty, setDifficulty] = useState<Difficulty>(settings.difficulty || 'medium');
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,7 +22,7 @@ const QuizGenerator: React.FC<QuizGeneratorProps> = ({ settings, onQuizGenerated
     setIsGenerating(true);
     setError(null);
 
-    const result = await generateQuiz(subject.trim(), settings);
+    const result = await generateQuiz(subject.trim(), { ...settings, difficulty });
     
     if (result.success && result.data) {
       onQuizGenerated(result.data);
@@ -62,6 +63,28 @@ const QuizGenerator: React.FC<QuizGeneratorProps> = ({ settings, onQuizGenerated
                 disabled={isGenerating}
               />
             </div>
+            
+            <div>
+              <label htmlFor="difficulty" className="block text-white text-sm font-medium mb-2">
+                Difficulty Level
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                {['easy', 'medium', 'hard'].map((level) => (
+                  <button
+                    key={level}
+                    type="button"
+                    onClick={() => setDifficulty(level as Difficulty)}
+                    className={`py-2 px-4 text-center border ${difficulty === level 
+                      ? 'bg-white text-[#1a1a1a] border-white' 
+                      : 'bg-[#1a1a1a] text-white border-gray-600 hover:border-white'} 
+                      transition-colors capitalize ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={isGenerating}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {error && (
               <div className="flex items-center gap-2 text-red-400 bg-red-900/20 p-3">
@@ -75,6 +98,7 @@ const QuizGenerator: React.FC<QuizGeneratorProps> = ({ settings, onQuizGenerated
               <div className="text-gray-400 text-sm space-y-1">
                 <p>AI Source: {settings.aiSource === 'ollama' ? 'Local Ollama' : 'OpenRouter API'}</p>
                 <p>Model: {settings.model}</p>
+                <p>Difficulty: <span className="capitalize">{difficulty}</span></p>
                 {settings.aiSource === 'ollama' && <p>URL: {settings.ollamaUrl}</p>}
               </div>
             </div>

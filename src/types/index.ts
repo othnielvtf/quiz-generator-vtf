@@ -27,11 +27,14 @@ export interface QuizAttempt {
   completedAt: string;
 }
 
+export type Difficulty = 'easy' | 'medium' | 'hard';
+
 export interface Settings {
   aiSource: 'ollama' | 'openrouter';
   ollamaUrl: string;
   openrouterApiKey: string;
   model: string;
+  difficulty: Difficulty;
 }
 
 export interface APIResponse {
