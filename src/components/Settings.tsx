@@ -24,6 +24,13 @@ const SettingsComponent: React.FC<SettingsProps> = ({ settings, onSettingsChange
     }));
   };
   
+  const handleModelChange = (model: string) => {
+    setLocalSettings(prev => ({
+      ...prev,
+      model
+    }));
+  };
+  
   const handleDifficultyChange = (difficulty: Difficulty) => {
     setLocalSettings(prev => ({
       ...prev,
@@ -92,34 +99,73 @@ const SettingsComponent: React.FC<SettingsProps> = ({ settings, onSettingsChange
           )}
 
           {localSettings.aiSource === 'openrouter' && (
+            <>
+              <div>
+                <label htmlFor="openrouterKey" className="block text-white text-sm font-medium mb-2">
+                  OpenRouter API Key
+                </label>
+                <input
+                  type="password"
+                  id="openrouterKey"
+                  value={localSettings.openrouterApiKey}
+                  onChange={(e) => setLocalSettings(prev => ({ ...prev, openrouterApiKey: e.target.value }))}
+                  className="w-full px-4 py-2 bg-[#1a1a1a] text-white border border-gray-600 focus:border-white focus:outline-none"
+                  placeholder="Enter your OpenRouter API key"
+                />
+              </div>
+              
+              <div className="mt-4">
+                <label className="block text-white text-sm font-medium mb-2">
+                  Select Model
+                </label>
+                <div className="space-y-2">
+                  <label className="flex items-center p-3 border border-gray-600 hover:border-white transition-colors cursor-pointer">
+                    <input
+                      type="radio"
+                      name="openrouterModel"
+                      checked={localSettings.model === 'meta-llama/llama-3.2-3b-instruct:free'}
+                      onChange={() => handleModelChange('meta-llama/llama-3.2-3b-instruct:free')}
+                      className="mr-3"
+                    />
+                    <div>
+                      <div className="text-white">Llama 3.2 (3B)</div>
+                      <div className="text-gray-400 text-sm">Smaller, faster model</div>
+                    </div>
+                  </label>
+                  
+                  <label className="flex items-center p-3 border border-gray-600 hover:border-white transition-colors cursor-pointer">
+                    <input
+                      type="radio"
+                      name="openrouterModel"
+                      checked={localSettings.model === 'meta-llama/llama-4-maverick:free'}
+                      onChange={() => handleModelChange('meta-llama/llama-4-maverick:free')}
+                      className="mr-3"
+                    />
+                    <div>
+                      <div className="text-white">Llama 4 Maverick</div>
+                      <div className="text-gray-400 text-sm">More powerful, better quality responses</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </>
+          )}
+
+          {localSettings.aiSource === 'ollama' && (
             <div>
-              <label htmlFor="openrouterKey" className="block text-white text-sm font-medium mb-2">
-                OpenRouter API Key
+              <label htmlFor="model" className="block text-white text-sm font-medium mb-2">
+                Ollama Model
               </label>
               <input
-                type="password"
-                id="openrouterKey"
-                value={localSettings.openrouterApiKey}
-                onChange={(e) => setLocalSettings(prev => ({ ...prev, openrouterApiKey: e.target.value }))}
+                type="text"
+                id="model"
+                value={localSettings.model}
+                onChange={(e) => setLocalSettings(prev => ({ ...prev, model: e.target.value }))}
                 className="w-full px-4 py-2 bg-[#1a1a1a] text-white border border-gray-600 focus:border-white focus:outline-none"
-                placeholder="Enter your OpenRouter API key"
+                placeholder="llama3.2"
               />
             </div>
           )}
-
-          <div>
-            <label htmlFor="model" className="block text-white text-sm font-medium mb-2">
-              Model
-            </label>
-            <input
-              type="text"
-              id="model"
-              value={localSettings.model}
-              onChange={(e) => setLocalSettings(prev => ({ ...prev, model: e.target.value }))}
-              className="w-full px-4 py-2 bg-[#1a1a1a] text-white border border-gray-600 focus:border-white focus:outline-none"
-              placeholder={localSettings.aiSource === 'ollama' ? 'llama3.2' : 'meta-llama/llama-3.2-3b-instruct:free'}
-            />
-          </div>
 
           <div>
             <label className="block text-white text-sm font-medium mb-2">
